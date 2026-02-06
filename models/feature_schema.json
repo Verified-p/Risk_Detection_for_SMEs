@@ -1,0 +1,11 @@
+
+
+{
+  "features": [
+    "login_hour",
+    "device_known",
+    "location_known",
+    "access_count",
+    "role_level"
+  ]
+}
