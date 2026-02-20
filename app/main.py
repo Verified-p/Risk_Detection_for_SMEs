@@ -1,32 +1,61 @@
+from datetime import datetime
+
 from app.engine import detect
 from app.explain import explain
 from app.risk import calculate
-from app.storage import log
+from app.storage import save_event
 from app.privacy import sanitize
 
 
-def process_event(event: dict) -> dict:
-    """
-    Central processing pipeline for TrustLens AI
-    """
+# =================================================
+# AUTOMATED SECURITY ACTIONS
+# =================================================
+def execute_actions(risk: float):
+    verified = 0
+    blocked = 0
+    rotated = 0
 
-    # 1️⃣ Sanitize input (privacy-first)
+    if risk >= 70:
+        blocked = 1
+        rotated = 1
+    elif risk >= 40:
+        blocked = 1
+    else:
+        verified = 1
+
+    return verified, blocked, rotated
+
+
+# =================================================
+# 🚀 MAIN PROCESSOR
+# =================================================
+def process_event(event: dict):
+
     clean_event = sanitize(event)
+    clean_event["timestamp"] = datetime.utcnow().isoformat()
 
-    # 2️⃣ Detect anomalies (AI + rules)
     score, rule_flags = detect(clean_event)
 
-    # 3️⃣ Calculate final risk percentage
     risk = calculate(score, len(rule_flags))
 
-    # 4️⃣ Generate human-readable explanations
     reasons = explain(score, rule_flags)
 
-    # 5️⃣ Persist audit log (NO sensitive data)
-    log(clean_event, risk, reasons)
+    verified, blocked, rotated = execute_actions(risk)
 
-    # 6️⃣ Return result to UI / API
+    save_event(
+        clean_event,
+        risk,
+        reasons,
+        blocked,
+        rotated,
+        verified
+    )
+
     return {
         "risk": int(risk),
+        "verified": verified,
+        "blocked": blocked,
+        "credentials_rotated": rotated,
         "reasons": reasons
     }
+

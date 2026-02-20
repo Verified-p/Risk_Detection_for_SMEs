@@ -1,65 +1,62 @@
 import json
 import joblib
-import random
 from app.config import MODEL_PATH, RULES_PATH
+import random
 
-# ---- Load pre-trained Isolation Forest model ----
+# Load model and rules
 model = joblib.load(MODEL_PATH)
-
-# ---- Load baseline rules ----
 rules = json.load(open(RULES_PATH))
 
 
 def detect(event):
     """
-    Detect anomalous events using AI model and baseline rules.
-    Returns:
-        - score: float (negative = anomaly)
-        - rule_flags: list of triggered rules (human-readable)
+    AI + rules anomaly detection.
+    Returns: (score, rule_flags)
     """
+    # Extract features safely
+    login_hour = event.get("login_hour", 12)
+    device_known = event.get("device_known", 1)
+    location_known = event.get("location_known", 1)
+    access_count = event.get("access_count", 1)
+    role_level = event.get("role_level", 1)
 
     features = [
-        event["login_hour"],
-        event["device_known"],
-        event["location_known"],
-        event["access_count"],
-        event["role_level"]
+        login_hour,
+        device_known,
+        location_known,
+        access_count,
+        role_level
     ]
 
-    # ---- Isolation Forest score ----
-    base_score = model.decision_function([features])[0]
-    score = base_score + random.uniform(-0.2, 0.2)  # demo variability
+    # AI anomaly score
+    score = model.decision_function([features])[0] + random.uniform(-0.1, 0.1)
 
-    # ---- Human-readable fields ----
-    device_name = event.get("device_name", "Unknown device")
-    location_name = event.get("location_name", "Unknown location")
-    role_name = event.get("role_name", "Unknown role")
-
+    # Rule flags
     rule_flags = []
 
-    # ---- Rule 1: Login time ----
-    if not rules["allowed_hours"][0] <= event["login_hour"] <= rules["allowed_hours"][1]:
-        rule_flags.append("Login outside normal working hours")
+    # Working hours
+    allowed_hours = rules.get("allowed_hours", [6, 20])
+    if not allowed_hours[0] <= login_hour <= allowed_hours[1]:
+        rule_flags.append("Login outside working hours")
 
-    # ---- Rule 2: Unknown device ----
-    if event["device_known"] == 0:
-        rule_flags.append(f"Login from unknown device ({device_name})")
+    # Unknown device
+    if device_known == 0:
+        rule_flags.append(f"Unknown device used ({event.get('device_name')})")
 
-    # ---- Rule 3: Unknown location ----
-    if event["location_known"] == 0:
-        rule_flags.append(f"Login from unfamiliar location ({location_name})")
+    # Unknown location
+    if location_known == 0:
+        rule_flags.append(f"Unrecognized location ({event.get('location_name')})")
 
-    # ---- Rule 4: High access volume ----
-    if event["access_count"] > rules["max_access"]:
-        rule_flags.append("Unusually high access activity")
+    # Excessive accesses
+    max_access = rules.get("max_access", 50)
+    if access_count > max_access:
+        rule_flags.append("Excessive access attempts detected")
 
-    # ---- Rule 5: Privileged role misuse ----
-    if event["role_level"] == 3 and (
-        event["device_known"] == 0 or event["location_known"] == 0
-    ):
-        rule_flags.append(f"High-privilege role misuse detected ({role_name})")
+    # Privileged misuse
+    if role_level >= 3 and (device_known == 0 or location_known == 0):
+        rule_flags.append(f"Privileged role misuse ({event.get('role_name')})")
 
-    # ---- Occasional soft threat for realism ----
+    # Add occasional soft threat for realism
     if random.random() < 0.05:
         rule_flags.append(random.choice([
             "Suspicious rapid login attempts",
@@ -68,4 +65,3 @@ def detect(event):
         ]))
 
     return score, rule_flags
-
