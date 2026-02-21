@@ -1,15 +1,11 @@
 from datetime import datetime
-
-from app.engine import detect
-from app.explain import explain
-from app.risk import calculate
 from app.storage import save_event
 from app.privacy import sanitize
 
 
-# =================================================
-# AUTOMATED SECURITY ACTIONS
-# =================================================
+# =========================================
+# Security actions
+# =========================================
 def execute_actions(risk: float):
     verified = 0
     blocked = 0
@@ -18,27 +14,30 @@ def execute_actions(risk: float):
     if risk >= 70:
         blocked = 1
         rotated = 1
-    elif risk >= 40:
-        blocked = 1
     else:
         verified = 1
 
     return verified, blocked, rotated
 
 
-# =================================================
-# 🚀 MAIN PROCESSOR
-# =================================================
+# =========================================
+# MAIN PROCESSOR (NO DATABASE CHECKS)
+# =========================================
 def process_event(event: dict):
 
     clean_event = sanitize(event)
     clean_event["timestamp"] = datetime.utcnow().isoformat()
 
-    score, rule_flags = detect(clean_event)
+    unknown = event.get("unknown_user", 1)
 
-    risk = calculate(score, len(rule_flags))
-
-    reasons = explain(score, rule_flags)
+    # ⭐ ONLY use Bank flag
+    if unknown == 1:
+        risk = 90
+        reasons = ["Unknown user / not registered by admin"]
+        clean_event["role"] = "Unknown"
+    else:
+        risk = 10
+        reasons = ["Normal login activity detected"]
 
     verified, blocked, rotated = execute_actions(risk)
 
@@ -58,4 +57,3 @@ def process_event(event: dict):
         "credentials_rotated": rotated,
         "reasons": reasons
     }
-
