@@ -1,14 +1,18 @@
 🔐 TrustLens AI
+
 AI‑Powered Cybersecurity Risk Detection Platform for SMEs
+
 📌 Overview
+
 TrustLens AI is an intelligent security monitoring solution designed for Small and Medium Enterprises (SMEs). The platform captures, analyzes, and responds to suspicious user activities in real time by combining Machine Learning (Isolation Forest) with Heuristic Rule-Based Analysis.
 
 By assigning dynamic risk scores (0–100%), TrustLens AI identifies compromised accounts, insider threats, and abnormal access patterns before they escalate into data breaches.
 
 🏗️ Project Structure
+
 To ensure the system runs correctly, organize your files as follows:
 
-Plaintext
+
 trustlens-ai/
 ├── main.py              # FastAPI Backend API
 ├── dashboard.py         # Streamlit Frontend UI
