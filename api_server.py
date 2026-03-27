@@ -29,19 +29,26 @@ async def receive_event(
     Returns risk result
     """
 
-    # 1️⃣ Validate API key exists
+    # Validate API key exists
     if not API_KEY:
         raise HTTPException(status_code=500, detail="Server key not configured")
 
-    # 2️⃣ Verify key
+    # Verify key
     if x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
-    # 3️⃣ Read event body safely
+    # Read event body
     event = await request.json()
 
-    # 4️⃣ Process with AI engine
+    # Validate essential fields
+    event.setdefault("user", "Unknown")
+    event.setdefault("ip", "Unknown")
+    event.setdefault("device", "Unknown Device")
+    event.setdefault("location", "Unknown Location")
+    event.setdefault("unknown_user", 1 if event.get("role") == "unknown" else 0)
+
+    # Process with AI engine
     result = process_event(event)
 
-    # 5️⃣ Return response
+    # Return response
     return result

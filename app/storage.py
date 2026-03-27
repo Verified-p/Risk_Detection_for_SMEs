@@ -31,50 +31,45 @@ init_db()
 
 
 # =========================================
-# SAFE EVENT SAVER (FINAL PIPELINE STEP)
+# SAFE EVENT SAVER
 # =========================================
 def save_event(event, risk, reasons, blocked, rotated, verified):
     """
     Final trusted storage layer.
 
-    Guarantees:
-    ✔ No missing fields
-    ✔ Reasons never None
-    ✔ SQLite auto-increment works
-    ✔ Works for ANY SME payload
+    Stores the REAL event exactly as received from SME systems.
     """
 
     timestamp = datetime.utcnow().isoformat()
 
-    # ----------------------------
-    # FINAL SAFETY NORMALIZATION
-    # ----------------------------
+    # ---------------------------------
+    # KEEP REAL EVENT DATA
+    # ---------------------------------
     safe_event = {
-        "username": event.get("username", "Unknown"),
-        "ip_address": event.get("ip_address", "Unknown"),
-        "session_id": event.get("session_id"),
-        "device_name": event.get("device_name", "Windows Laptop"),
-        "location_name": event.get("location_name", "Kisumu Office"),
-        "role_name": event.get("role_name", "Unknown"),
-        "action": event.get("action", "login"),
+        "user": event.get("user","Unknown"),
+        "ip": event.get("ip","Unknown"),
+        "device": event.get("device","Unknown Device"),
+        "location": event.get("location","Unknown"),
+        "lat": event.get("lat"),
+        "lon": event.get("lon"),
+        "role": event.get("role","Unknown"),
         "login_hour": event.get("login_hour"),
         "device_known": event.get("device_known"),
         "location_known": event.get("location_known"),
         "access_count": event.get("access_count"),
-        "role_level": event.get("role_level"),
     }
 
-    # ----------------------------
+    # ---------------------------------
     # GUARANTEE REASONS
-    # ----------------------------
+    # ---------------------------------
     if not reasons:
         reasons = ["Normal login activity detected"]
 
     reasons_text = "; ".join(reasons)
 
-    # ----------------------------
-    # SAVE
-    # ----------------------------
+    # ---------------------------------
+    # SAVE TO DATABASE
+    # ---------------------------------
     conn = sqlite3.connect(DB_PATH)
 
     conn.execute("""

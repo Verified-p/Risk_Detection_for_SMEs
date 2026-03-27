@@ -33,7 +33,7 @@ def sanitize(event: dict):
         "ip_address": pick("ip_address", "ip", "client_ip", default="Unknown"),
         "session_id": pick("session_id", "session", default=f"sess-{uuid.uuid4().hex[:8]}"),
         "device_name": pick("device_name", "device", "machine", default="Windows Laptop"),
-        "location_name": pick("location_name", "location", "office", default="Kisumu Office"),
+        "location_name": pick("location_name", "location", "office", default="kisii"),
 
         # ONLY THIS may remain unknown
         "role_name": pick("role_name", "role", default="Unknown"),
