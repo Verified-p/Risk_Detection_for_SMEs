@@ -14,16 +14,24 @@ To ensure the system runs correctly, organize your files as follows:
 
 
 trustlens-ai/
+
 ├── main.py              # FastAPI Backend API
+
 ├── dashboard.py         # Streamlit Frontend UI
+
 ├── model_engine.py      # Logic for Isolation Forest & Risk Scoring
+
 ├── requirements.txt     # List of Python libraries
+
 ├── data/
 │   └── security_logs.db # SQLite Database for event persistence
+
 ├── models/
 │   └── iso_forest.joblib # Saved ML Model state
+
 └── assets/
     └── logo.png         # Project branding
+    
 🛠️ Installation & Setup
 1. Prerequisites
 Ensure you have Python 3.9 or higher installed on your system.
