@@ -1,179 +1,87 @@
-# 🔐 TrustLens AI
+🔐 TrustLens AI
+AI‑Powered Cybersecurity Risk Detection Platform for SMEs
+📌 Overview
+TrustLens AI is an intelligent security monitoring solution designed for Small and Medium Enterprises (SMEs). The platform captures, analyzes, and responds to suspicious user activities in real time by combining Machine Learning (Isolation Forest) with Heuristic Rule-Based Analysis.
 
-## AI‑Powered Cybersecurity Risk Detection Platform for SMEs
+By assigning dynamic risk scores (0–100%), TrustLens AI identifies compromised accounts, insider threats, and abnormal access patterns before they escalate into data breaches.
 
----
+🏗️ Project Structure
+To ensure the system runs correctly, organize your files as follows:
 
-## 📌 Overview
+Plaintext
+trustlens-ai/
+├── main.py              # FastAPI Backend API
+├── dashboard.py         # Streamlit Frontend UI
+├── model_engine.py      # Logic for Isolation Forest & Risk Scoring
+├── requirements.txt     # List of Python libraries
+├── data/
+│   └── security_logs.db # SQLite Database for event persistence
+├── models/
+│   └── iso_forest.joblib # Saved ML Model state
+└── assets/
+    └── logo.png         # Project branding
+🛠️ Installation & Setup
+1. Prerequisites
+Ensure you have Python 3.9 or higher installed on your system.
 
-**TrustLens AI** is an AI‑powered cybersecurity risk detection platform designed to help **Small and Medium Enterprises (SMEs)** monitor, analyze, and respond to suspicious user activities in real time. The system combines **machine learning**, **rule‑based analysis**, and **behavioral patterns** to assign dynamic risk scores to security events such as logins, access attempts, and privilege usage.
+2. Install Required Libraries
+Run the following command to install all necessary dependencies:
 
-The platform provides decision‑makers with **actionable insights**, enabling early detection of threats such as compromised accounts, insider misuse, and abnormal access behavior.
+Bash
+pip install fastapi uvicorn streamlit pandas numpy scikit-learn joblib plotly requests
+Libraries Included:
 
----
+fastapi & uvicorn: For the high-speed backend API.
 
-## 🎯 Problem Statement
+streamlit: For the interactive web dashboard.
 
-Many SMEs lack the financial and technical capacity to deploy full‑scale Security Operations Centers (SOCs). As a result:
+scikit-learn: For the Isolation Forest ML model.
 
-* Suspicious login behavior goes unnoticed
-* Insider threats are detected too late
-* Security logs are rarely analyzed in real time
-* Incident response is mostly reactive
+pandas & numpy: For data processing and numerical analysis.
 
-TrustLens AI addresses this gap by offering an **intelligent, lightweight, and explainable security monitoring system** tailored for SMEs.
+plotly: For real-time risk charts and maps.
 
----
+🚀 How to Run the Platform
+To get the full system running, you need to start the Backend and the Frontend in two separate terminal windows.
 
-## 🚀 Objectives
+Step 1: Start the AI Backend (FastAPI)
+Bash
+uvicorn main:app --reload
+The API will be live at: http://127.0.0.1:8000
+View API Documentation at: http://127.0.0.1:8000/docs
 
-* Detect abnormal user behavior using AI
-* Assign clear and interpretable risk scores
-* Explain *why* an event is risky (explainable AI)
-* Support early decision‑making and incident response
-* Provide real‑time visibility into security posture
+Step 2: Start the Admin Dashboard (Streamlit)
+Bash
+streamlit run dashboard.py
+The Dashboard will open automatically in your browser at: http://localhost:8501
 
----
+🧠 Core Methodology
+1. AI Anomaly Detection
+The system utilizes the Isolation Forest algorithm. It functions by isolating observations in a forest of decision trees. Anomalies are isolated significantly faster (shorter path length) than normal data points.
 
-## 🧠 How TrustLens AI Works
+2. Hybrid Risk Scoring
+TrustLens AI uses a weighted formula to combine AI results with hard security rules:
 
-### 1. Event Ingestion
+AI Score: Measures statistical deviation from the norm.
 
-The system processes security events containing attributes such as:
+Rule Score: Flags specific violations (e.g., Logins at 3:00 AM, Unknown Devices, Foreign IPs).
 
-* Login time
-* Device recognition status
-* Location recognition status
-* Access frequency
-* User role or privilege level
+Final Score: A normalized percentage categorizing threats as Low, Medium, or High.
 
-These events represent interactions by authenticated users within an organization’s systems.
+🖥️ Platform Features
+Live Attack Map: Visualizes the geographic origin of security threats.
 
----
+Real-time Risk Ticker: A live feed of incoming login attempts and their AI-assigned risk.
 
-### 2. AI‑Based Anomaly Detection
+Explainable AI (XAI): Provides a "Reasoning" field for every block action (e.g., "Flagged due to unusual geographic shift").
 
-TrustLens AI uses an **Isolation Forest** machine learning model to detect unusual behavior patterns by:
+Historical Auditing: All events are saved to an SQLite database for forensic review.
 
-* Learning what *normal* activity looks like
-* Identifying deviations from established behavior
-* Assigning anomaly scores to events
+👥 Research Team (Kisii University)
+Andrew Otieno - IN13/00079/23 | Lazarus Gommit - IN13/00058/23
 
-This enables the system to flag activities that statistically differ from typical usage.
+Osano David - IN13/00080/23 | George Omollo - IN13/00081/23
 
----
+Basil Alphonse - IN13/00125/23 | Cyprian Joash - IN13/00167/23
 
-### 3. Rule‑Based Risk Evaluation
-
-In addition to AI detection, the system applies security rules such as:
-
-* Login outside normal working hours
-* Access from unknown devices
-* Access from unfamiliar locations
-* Excessive access attempts
-* High‑privilege role used in risky contexts
-
-Each triggered rule contributes to the overall risk score.
-
----
-
-### 4. Risk Scoring Engine
-
-The AI score and rule‑based score are combined into a **single normalized risk percentage (0–100%)**, which is classified into:
-
-* **Low Risk**: Normal activity
-* **Medium Risk**: Suspicious behavior requiring monitoring
-* **High Risk**: Critical threat requiring immediate action
-
----
-
-### 5. Explainable Decisions
-
-For every analyzed event, TrustLens AI provides:
-
-* The computed risk level
-* Clear reasons explaining the risk
-* Recommended response actions
-
-This ensures transparency and trust in AI‑driven decisions.
-
----
-
-## 🖥️ Platform Features
-
-* 📊 Real‑time risk dashboard
-* 🔎 Detailed high‑risk event analysis
-* 📈 Risk trend visualization
-* 🧠 AI + rule‑based hybrid detection
-* 📄 Log file analysis support (CSV / JSON)
-* ⚡ Live monitoring simulation
-
----
-
-## 🏗️ System Architecture
-
-* **Frontend**: Streamlit dashboard
-* **Backend**: Python application logic
-* **Machine Learning**: Scikit‑learn (Isolation Forest)
-* **Data Handling**: Pandas, NumPy
-* **Model Persistence**: Joblib
-
----
-
-## 🔐 Security Scope
-
-TrustLens AI is designed to monitor **authorized users within an organization**, such as:
-
-* Employees
-* Managers
-* Administrators
-
-The system focuses on detecting **misuse, compromise, or abnormal behavior** within considered access boundaries.
-
----
-
-## 📚 Use Cases
-
-* Detect compromised employee accounts
-* Identify suspicious admin activity
-* Monitor abnormal login behavior
-* Strengthen internal security controls
-* Support compliance and audit readiness
-
----
-
-## 🧪 Extensibility
-
-The platform can be extended to include:
-
-* Integration with real authentication logs
-* IP reputation analysis
-* User behavior profiling over time
-* Alert notifications (email, SIEM tools)
-* Role‑based access visualization
-
----
-
-## 🎓 Academic Value
-
-TrustLens AI demonstrates practical application of:
-
-* Artificial Intelligence in cybersecurity
-* Anomaly detection algorithms
-* Explainable AI principles
-* Secure system design
-* Real‑time data analysis
-
-It serves as a strong foundation for academic research, demonstrations, and further innovation.
-
----
-
-## 🏁 Conclusion
-
-TrustLens AI provides a modern, intelligent, and scalable approach to cybersecurity monitoring for SMEs. By combining AI‑driven anomaly detection with clear rule‑based logic, the system delivers **transparent, actionable, and real‑time security insights**, helping organizations move from reactive to proactive defense strategies.
-
----
-
-**Project Name:** TrustLens AI
-**Domain:** Cybersecurity / Artificial Intelligence
-**Focus:** Risk Detection & Behavioral Analysis
+Domain: Cybersecurity / Artificial Intelligence
