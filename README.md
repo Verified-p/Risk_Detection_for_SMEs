@@ -33,13 +33,17 @@ trustlens-ai/
     └── logo.png         # Project branding
     
 🛠️ Installation & Setup
+
 1. Prerequisites
+
 Ensure you have Python 3.9 or higher installed on your system.
 
 2. Install Required Libraries
+
 Run the following command to install all necessary dependencies:
 
 Bash
+
 pip install fastapi uvicorn streamlit pandas numpy scikit-learn joblib plotly requests
 Libraries Included:
 
@@ -54,21 +58,31 @@ pandas & numpy: For data processing and numerical analysis.
 plotly: For real-time risk charts and maps.
 
 🚀 How to Run the Platform
+
 To get the full system running, you need to start the Backend and the Frontend in two separate terminal windows.
 
 Step 1: Start the AI Backend (FastAPI)
 Bash
+
 uvicorn main:app --reload
+
 The API will be live at: http://127.0.0.1:8000
+
 View API Documentation at: http://127.0.0.1:8000/docs
 
+
 Step 2: Start the Admin Dashboard (Streamlit)
+
 Bash
+
 streamlit run dashboard.py
+
 The Dashboard will open automatically in your browser at: http://localhost:8501
 
 🧠 Core Methodology
+
 1. AI Anomaly Detection
+
 The system utilizes the Isolation Forest algorithm. It functions by isolating observations in a forest of decision trees. Anomalies are isolated significantly faster (shorter path length) than normal data points.
 
 2. Hybrid Risk Scoring
@@ -90,6 +104,7 @@ Explainable AI (XAI): Provides a "Reasoning" field for every block action (e.g.,
 Historical Auditing: All events are saved to an SQLite database for forensic review.
 
 👥 Research Team (Kisii University)
+
 Andrew Otieno - IN13/00079/23 | Lazarus Gommit - IN13/00058/23
 
 Osano David - IN13/00080/23 | George Omollo - IN13/00081/23
